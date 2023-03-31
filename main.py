@@ -21,7 +21,7 @@ def send_welcome(message):
         if message.from_user.id == 1370770852:
             bot.reply_to(message, "Приветствую мой господин", reply_markup=markup)
         else:
-            bot.reply_to(message, "Приветствую! Это чат для урегулирования расписания занятий в ДНОЦ (CERC)", reply_markup=markup)
+            bot.reply_to(message, f"Приветствую, {m[message.from_user.id][0]}! Это чат для урегулирования расписания занятий в ДНОЦ (CERC)", reply_markup=markup)
     else:
         bot.send_message(1370770852, str(message.from_user.id))
         bot.send_message(1370770852, str(message.from_user.username))
@@ -114,7 +114,10 @@ m = {1370770852: ['Разработчик', 0],
      374752561: ['Евгений Александрович', 0],
      974221395: ['Даниил', 2],
      1755954128: ['Тимофей', 1],
-     817689430: ['Вераника', 1]}
+     817689430: ['Вераника', 1],
+     1332688273: ['Арсений', 1],
+     1206662880: ['Илья', 1],
+     849839122: ['Роберт', 1]}
 ned = 0
 
 pon1 = {'Разработчик': ['6.00', '7.00']}
