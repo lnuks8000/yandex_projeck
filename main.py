@@ -78,14 +78,15 @@ def send_schedule(message):
         itembtn = types.KeyboardButton('Назад')
         markup.add(itembtn)
         if m[message.from_user.id][0] in pon1:
-            u = types.KeyboardButton('Удалить записть')
+            u = types.KeyboardButton('Удалить записть на этот понедельник')
             markup.add(u)
         else:
-            u = types.KeyboardButton('Добавить записть')
+            u = types.KeyboardButton('Добавить записть на этот понедельник')
             markup.add(u)
+        soop = ''
         for name, key in pon1.items():
-            bot.reply_to(message, f"{name}: {' '.join(key)}")
-        bot.reply_to(message, "Расписание на понедельник", reply_markup=markup)
+            soop += f"{name}: {' - '.join(key)}" + '\n'
+        bot.reply_to(message, f"{soop}", reply_markup=markup)
 
 
 @bot.message_handler(func=lambda message: message.text == 'Следующая неделя')
@@ -114,13 +115,14 @@ m = {1370770852: ['Разработчик', 0],
      374752561: ['Евгений Александрович', 0],
      974221395: ['Даниил', 2],
      1755954128: ['Тимофей', 1],
-     817689430: ['Вераника', 1],
+     817689430: ['Вероника', 1],
      1332688273: ['Арсений', 1],
      1206662880: ['Илья', 1],
      849839122: ['Роберт', 1]}
 ned = 0
 
-pon1 = {'Разработчик': ['6.00', '7.00']}
+pon1 = {'Разработчик': ['6.00', '7.00'],
+        'Илья': ['5.00', '5.01']}
 vtor1 = []
 sred1 = []
 chet1 = []
