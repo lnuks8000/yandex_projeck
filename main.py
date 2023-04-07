@@ -27,6 +27,9 @@ def send_welcome(message):
         bot.send_message(1370770852, str(message.from_user.username))
         bot.reply_to(message, "Увы, но у вас нет доступа :)", reply_markup=markup)
 
+@bot.message_handler(func=lambda message: message.text == 'Назад')
+def send_schedule(message):
+    send_welcome(message)
 
 # Обработка нажатия кнопки "Расписание"
 @bot.message_handler(func=lambda message: message.text == 'Расписание')
@@ -51,6 +54,7 @@ def send_schedule(message):
 
 @bot.message_handler(func=lambda message: message.text == 'Эта неделя')
 def send_schedule(message):
+    global ned
     ned = 0
     markup = types.ReplyKeyboardMarkup()\
     # Отправляем расписание
@@ -75,6 +79,13 @@ def send_schedule(message):
 def send_schedule(message):
     markup = types.ReplyKeyboardMarkup()
     if ned == 0:
+        pon1 = {}
+        u = open('pon1.txt', 'r')
+        x = u.readlines()
+        for i in x:
+            a, b, c = i.split()
+            pon1[a] = [b, c]
+        u.close()
         itembtn = types.KeyboardButton('Назад')
         markup.add(itembtn)
         if m[message.from_user.id][0] in pon1:
@@ -86,11 +97,57 @@ def send_schedule(message):
         soop = ''
         for name, key in pon1.items():
             soop += f"{name}: {' - '.join(key)}" + '\n'
-        bot.reply_to(message, f"{soop}", reply_markup=markup)
+        #u.close()
+        if soop != '':
+            bot.reply_to(message, f"{soop}", reply_markup=markup)
+        else:
+            bot.reply_to(message, f"Еще никто не записался.", reply_markup=markup)
+    else:
+        pon2 = {}
+        u = open('pon2.txt', 'r')
+        x = u.readlines()
+        for i in x:
+            a, b, c = i.split()
+            pon2[a] = [b, c]
+        u.close()
+        itembtn = types.KeyboardButton('Назад')
+        markup.add(itembtn)
+        if m[message.from_user.id][0] in pon2:
+            u = types.KeyboardButton('Удалить записть на следующий понедельник')
+            markup.add(u)
+        else:
+            u = types.KeyboardButton('Добавить записть на следующий понедельник')
+            markup.add(u)
+        soop = ''
+        for name, key in pon2.items():
+            soop += f"{name}: {' - '.join(key)}" + '\n'
+        # u.close()
+        if soop != '':
+            bot.reply_to(message, f"{soop}", reply_markup=markup)
+        else:
+            bot.reply_to(message, f"Еще никто не записался.", reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: message.text == 'Удалить записть на этот понедельник')
+def send_schedule(message):
+    u = open('pon1.txt', 'r')
+    x = u.readlines()
+    y = []
+    for i in x:
+        if m[message.from_user.id][0] not in i:
+            y.append(i)
+    u.close()
+    u = open('pon1.txt', 'w')
+    u.write('\n'.join(y))
+    u.close()
+    bot.reply_to(message, "Запись удалена")
+
+
 
 
 @bot.message_handler(func=lambda message: message.text == 'Следующая неделя')
 def send_schedule(message):
+    global ned
     ned = 1
     markup = types.ReplyKeyboardMarkup()\
     # Отправляем расписание
@@ -120,9 +177,6 @@ m = {1370770852: ['Разработчик', 0],
      1206662880: ['Илья', 1],
      849839122: ['Роберт', 1]}
 ned = 0
-
-pon1 = {'Разработчик': ['6.00', '7.00'],
-        'Илья': ['5.00', '5.01']}
 vtor1 = []
 sred1 = []
 chet1 = []
