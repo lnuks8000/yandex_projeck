@@ -78,86 +78,66 @@ def send_schedule(message):
 @bot.message_handler(func=lambda message: message.text == 'Понедельник')
 def send_schedule(message):
     markup = types.ReplyKeyboardMarkup()
-    if ned == 0:
-        pon1 = {}
-        u = open('pon1.txt', 'r')
-        x = u.readlines()
-        for i in x:
-            a, b, c = i.split()
-            pon1[a] = [b, c]
-        u.close()
-        itembtn = types.KeyboardButton('Назад')
-        markup.add(itembtn)
-        if m[message.from_user.id][0] in pon1:
-            u = types.KeyboardButton('Удалить записть на этот понедельник')
-            markup.add(u)
-        else:
-            u = types.KeyboardButton('Добавить записть на этот понедельник')
-            markup.add(u)
-        soop = ''
-        for name, key in pon1.items():
-            soop += f"{name}: {' - '.join(key)}" + '\n'
-        #u.close()
-        if soop != '':
-            bot.reply_to(message, f"{soop}", reply_markup=markup)
-        else:
-            bot.reply_to(message, f"Еще никто не записался.", reply_markup=markup)
+    pon1 = {}
+    u = open(f'ned{ned}/{den}.txt', 'r')
+    print(f'ned{ned}/{den}.txt')
+    x = u.readlines()
+    for i in x:
+        a, b, c = i.split()
+        pon1[a] = [b, c]
+    u.close()
+    itembtn = types.KeyboardButton('Назад')
+    markup.add(itembtn)
+    if m[message.from_user.id][0] in pon1:
+        u = types.KeyboardButton('Удалить записть')
+        markup.add(u)
     else:
-        pon2 = {}
-        u = open('pon2.txt', 'r')
-        x = u.readlines()
-        for i in x:
-            a, b, c = i.split()
-            pon2[a] = [b, c]
-        u.close()
-        itembtn = types.KeyboardButton('Назад')
-        markup.add(itembtn)
-        if m[message.from_user.id][0] in pon2:
-            u = types.KeyboardButton('Удалить записть на следующий понедельник')
-            markup.add(u)
-        else:
-            u = types.KeyboardButton('Добавить записть на следующий понедельник')
-            markup.add(u)
-        soop = ''
-        for name, key in pon2.items():
-            soop += f"{name}: {' - '.join(key)}" + '\n'
-        # u.close()
-        if soop != '':
-            bot.reply_to(message, f"{soop}", reply_markup=markup)
-        else:
-            bot.reply_to(message, f"Еще никто не записался.", reply_markup=markup)
+        u = types.KeyboardButton('Добавить записть')
+        markup.add(u)
+    soop = ''
+    for name, key in pon1.items():
+        soop += f"{name}: {' - '.join(key)}" + '\n'
+    #u.close()
+    if soop != '':
+        bot.reply_to(message, f"{soop}", reply_markup=markup)
+    else:
+        bot.reply_to(message, f"Еще никто не записался.", reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: message.text == 'Удалить записть на этот понедельник')
+
+@bot.message_handler(func=lambda message: message.text == 'Удалить записть')
 def send_schedule(message):
     markup = types.ReplyKeyboardMarkup()
-    if ned == 0:
-        u = open('pon1.txt', 'r')
-        x = u.readlines()
-        y = []
-        for i in x:
-            if m[message.from_user.id][0] not in i:
-                y.append(i)
-        u.close()
-        u = open('pon1.txt', 'w')
-        u.write('\n'.join(y))
-        u.close()
-    else:
-        u = open('pon2.txt', 'r')
-        x = u.readlines()
-        y = []
-        for i in x:
-            if m[message.from_user.id][0] not in i:
-                y.append(i)
-        u.close()
-        u = open('pon1.txt', 'w')
-        u.write('\n'.join(y))
-        u.close()
+    u = open(f'ned{ned}/{den}.txt', 'r')
+    x = u.readlines()
+    y = []
+    for i in x:
+        if m[message.from_user.id][0] not in i:
+            y.append(i)
+    u.close()
+    u = open(f'ned{ned}/{den}.txt', 'w')
+    u.write('\n'.join(y))
+    u.close()
     itembtn = types.KeyboardButton('Назад')
     markup.add(itembtn)
     bot.reply_to(message, f"Запись удалена", reply_markup=markup)
 
 
+@bot.message_handler(func=lambda message: message.text == 'Добавить записть')
+def send_schedule(message):
+    markup = types.ReplyKeyboardMarkup()
+    itembtn = types.KeyboardButton('Назад')
+    markup.add(itembtn)
+    bot.reply_to(message, f"Введите время со скольки до скольки вы будете находиться в ДНОЦ в формате: '#15.20 17.00#'", reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: '#' in message.text)
+def send_schedule(message):
+    markup = types.ReplyKeyboardMarkup()
+    u = open(f'ned{ned}/{den}.txt', 'a')
+    x = message.text[1:-1]
+    u.write(f"{m[message.from_user.id][0]} {x}")
+    bot.reply_to(message, 'Запись добавлена')
 
 
 
@@ -193,19 +173,5 @@ m = {1370770852: ['Разработчик', 0],
      1206662880: ['Илья', 1],
      849839122: ['Роберт', 1]}
 ned = 0
-vtor1 = []
-sred1 = []
-chet1 = []
-pyt1 = []
-subb1 = []
-vosk1 = []
-pon2 = []
-vtor2 = []
-sred2 = []
-chet2 = []
-pyt2 = []
-subb2 = []
-vosk2 = []
-
-#ctrl_z = 0
+den = 1
 bot.polling()
