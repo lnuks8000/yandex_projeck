@@ -130,17 +130,33 @@ def send_schedule(message):
 
 @bot.message_handler(func=lambda message: message.text == 'Удалить записть на этот понедельник')
 def send_schedule(message):
-    u = open('pon1.txt', 'r')
-    x = u.readlines()
-    y = []
-    for i in x:
-        if m[message.from_user.id][0] not in i:
-            y.append(i)
-    u.close()
-    u = open('pon1.txt', 'w')
-    u.write('\n'.join(y))
-    u.close()
-    bot.reply_to(message, "Запись удалена")
+    markup = types.ReplyKeyboardMarkup()
+    if ned == 0:
+        u = open('pon1.txt', 'r')
+        x = u.readlines()
+        y = []
+        for i in x:
+            if m[message.from_user.id][0] not in i:
+                y.append(i)
+        u.close()
+        u = open('pon1.txt', 'w')
+        u.write('\n'.join(y))
+        u.close()
+    else:
+        u = open('pon2.txt', 'r')
+        x = u.readlines()
+        y = []
+        for i in x:
+            if m[message.from_user.id][0] not in i:
+                y.append(i)
+        u.close()
+        u = open('pon1.txt', 'w')
+        u.write('\n'.join(y))
+        u.close()
+    itembtn = types.KeyboardButton('Назад')
+    markup.add(itembtn)
+    bot.reply_to(message, f"Запись удалена", reply_markup=markup)
+
 
 
 
