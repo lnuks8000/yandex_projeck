@@ -422,4 +422,5 @@ for i in x:
 u.close()
 ned = 0
 den = 1
+os.startfile(r'update.py')
 bot.polling()
