@@ -3,6 +3,7 @@ import os
 from telebot import types
 import asyncio
 from datetime import datetime
+import sys
 
 
 bot = telebot.TeleBot('6197994890:AAH4gv_1nrvzAGGzQm1OxYKsXumDH9P8FvI')
@@ -25,7 +26,7 @@ def send_welcome(message):
                 markup.add(t)
                 bot.reply_to(message, "Приветствую мой господин", reply_markup=markup)
             elif m[message.from_user.id][1] == 1:
-                bot.reply_to(message, f"Приветствую, {m[message.from_user.id][0]}! Это чат для урегулирования расписания занятий в ДНОЦ (CERC)", reply_markup=markup)
+                bot.reply_to(message, f"Приветствую, {str(m[message.from_user.id][0])}! Это чат для урегулирования расписания занятий в ДНОЦ (CERC)", reply_markup=markup)
             else:
                 bot.reply_to(message, "Приветствую, отбросы общества! Таких людей как вы, еще поискать прийдется! (к стати, даниИл, ты такой один :))", reply_markup=markup)
         else:
@@ -86,7 +87,7 @@ def send_schedule(message):
 
 
 @bot.message_handler(func=lambda message: message.text == 'Назад')
-def send_schedule(message):
+def nazad(message):
     try:
         if message.from_user.id in m.keys():
             send_welcome(message)
@@ -95,7 +96,7 @@ def send_schedule(message):
             bot.send_message(1370770852, str(message.from_user.id))
             bot.send_message(1370770852, str(message.from_user.username))
     except:
-        bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
+        bot.send_message(message.from_user.id,  'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'назад'")
 
 
@@ -110,7 +111,7 @@ def send_schedule(message):
             markup.add(itembtn)
             news = types.KeyboardButton('Следующая неделя')
             markup.add(news)
-            bot.reply_to(message, "Выбирите неделю", reply_markup=markup)
+            bot.reply_to(message, "Выберите неделю", reply_markup=markup)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
@@ -121,42 +122,46 @@ def send_schedule(message):
 
 
 @bot.message_handler(func=lambda message: message.text == 'Важные новости')
-def send_schedule(message):
+def newses(message):
     try:
         if message.from_user.id in m.keys():
             global ned, den
             ned = 3
             den = 0
-            print(0)
             markup = types.ReplyKeyboardMarkup()
-            news = types.KeyboardButton('Добавить новую запись')
-            markup.add(news)
-            if m[message.from_user.id][1] == 0:
-                print(1)
-                itembtn = types.KeyboardButton('Удалить запись')
-                markup.add(itembtn)
             s = types.KeyboardButton('Назад')
             markup.add(s)
             u = open('ned3/0.txt', 'r')
             x = u.readlines()
             t = ''
-            for i in x:
-                t += i
-            bot.reply_to(message, f"{t}", reply_markup=markup)
+            for i in range(len(x)):
+                t += f'{i + 1})' + ' '.join(x[i].split()) + '\n'
+            if m[message.from_user.id][1] == 0:
+                news = types.KeyboardButton('Добавить новость')
+                markup.add(news)
+                if x:
+                    itembtn = types.KeyboardButton('Удалить новость')
+                    markup.add(itembtn)
+                u.close()
+            if x:
+                bot.reply_to(message, "Новости:" + '\n' + t, reply_markup=markup)
+            else:
+                bot.reply_to(message, "Новостей пока нет", reply_markup=markup)
         else:
+
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
             bot.send_message(1370770852, str(message.from_user.username))
     except:
+        e = sys.exc_info()[1]
         bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'важные новости'")
 
 
-@bot.message_handler(func=lambda message: message.text == 'Добавить новую запись')
+@bot.message_handler(func=lambda message: message.text == 'Добавить новость')
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
-            print(4)
             markup = types.ReplyKeyboardMarkup()
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
@@ -170,17 +175,18 @@ def send_schedule(message):
         bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'добавить запись'")
 
+
 def ououou(message):
     try:
         if message.from_user.id in m.keys():
-            u = open('ned3/0.txt', 'a')
-            x = str(m[message.from_user.id][0]) + ': ' + str(message.text)
-            u.write(x)
-            markup = types.ReplyKeyboardMarkup()
-            itembtn = types.KeyboardButton('Назад')
-            markup.add(itembtn)
-            bot.reply_to(message, f"Новость добавлена!", reply_markup=markup)
-            bot.register_next_step_handler(message, ououou)
+            if message.text != 'Назад':
+                u = open('ned3/0.txt', 'a')
+                x = str(message.text) + '\n'
+                u.write(x)
+                bot.send_message(message.from_user.id, f"Новость добавлена!")
+                #newses(message)
+            else:
+                nazad(message)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
@@ -191,6 +197,55 @@ def ououou(message):
         bot.send_message(1370770852,
                          f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'ououou'")
 
+@bot.message_handler(func=lambda message: message.text == 'Удалить новость')
+def sew(message):
+    try:
+        if message.from_user.id in m.keys():
+            markup = types.ReplyKeyboardMarkup()
+            itembtn = types.KeyboardButton('Назад')
+            markup.add(itembtn)
+            bot.send_message(message.from_user.id, 'Введите номер новости которую следует удалить', reply_markup=markup)
+            bot.register_next_step_handler(message, cat)
+        else:
+            bot.reply_to(message, "Увы, но у вас нет доступа :)")
+            bot.send_message(1370770852, str(message.from_user.id))
+            bot.send_message(1370770852, str(message.from_user.username))
+    except:
+        bot.send_message(message.from_user.id,
+                         'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
+        bot.send_message(1370770852,
+                         f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'Удалить новость'")
+def cat(message):
+    try:
+        if message.from_user.id in m.keys():
+            try:
+                u = open('ned3/0.txt', 'r')
+                x = u.readlines()
+                u.close()
+                a = int(message.text)
+                if 1 <= a <= len(x):
+                    u = open('ned3/0.txt', 'w')
+                    for i in range(len(x)):
+                        if i != a - 1:
+                            u.write(x[i])
+                    u.close()
+                    bot.send_message(message.from_user.id, 'Новость удалена')
+                    newses(message)
+                else:
+                    bot.send_message(message.from_user.id,
+                                     'Пожалуйста, проверьте правльность ввода.' + '\n' + 'Число не должно быть меньше или больше возможных')
+                    bot.register_next_step_handler(message, cat)
+            except:
+                bot.send_message(message.from_user.id, 'Пожалуйста, проверьте правльность ввода.' + '\n' + 'Число не должно быть меньше или больше возможных')
+        else:
+            bot.reply_to(message, "Увы, но у вас нет доступа :)")
+            bot.send_message(1370770852, str(message.from_user.id))
+            bot.send_message(1370770852, str(message.from_user.username))
+    except:
+        bot.send_message(message.from_user.id,
+                         'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
+        bot.send_message(1370770852,
+                         f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'Удалить новость'")
 
 @bot.message_handler(func=lambda message: message.text == 'Эта неделя')
 def send_schedule(message):
@@ -200,20 +255,29 @@ def send_schedule(message):
             ned = 0
             markup = types.ReplyKeyboardMarkup() \
                 # Отправляем расписание
-            d1 = types.KeyboardButton('Понедельник')
-            markup.add(d1)
-            d2 = types.KeyboardButton('Вторник')
-            markup.add(d2)
-            d3 = types.KeyboardButton('Среда')
-            markup.add(d3)
-            d4 = types.KeyboardButton('Четверг')
-            markup.add(d4)
-            d5 = types.KeyboardButton('Пятница')
-            markup.add(d5)
-            d6 = types.KeyboardButton('Суббота')
-            markup.add(d6)
-            d7 = types.KeyboardButton('Воскресенье')
-            markup.add(d7)
+            p = datetime.today().isoweekday()
+            print(p)
+            if p < 1:
+                d1 = types.KeyboardButton('Понедельник')
+                markup.add(d1)
+            if p < 2:
+                d2 = types.KeyboardButton('Вторник')
+                markup.add(d2)
+            if p < 3:
+                d3 = types.KeyboardButton('Среда')
+                markup.add(d3)
+            if p < 4:
+                d4 = types.KeyboardButton('Четверг')
+                markup.add(d4)
+            if p < 5:
+                d5 = types.KeyboardButton('Пятница')
+                markup.add(d5)
+            if p < 6:
+                d6 = types.KeyboardButton('Суббота')
+                markup.add(d6)
+            if p < 7:
+                d7 = types.KeyboardButton('Воскресенье')
+                markup.add(d7)
             bot.reply_to(message, "Выбирите день", reply_markup=markup)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
@@ -233,13 +297,17 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            # print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
+                e = sys.exc_info()[1]
+                print(e.args[0])
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
                 bot.send_message(message.from_user.id, 'Извините, кажется что-то случилось, ошибка уже решается')
@@ -278,12 +346,14 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
@@ -323,12 +393,14 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
@@ -368,12 +440,14 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
@@ -413,13 +487,17 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
+                e = sys.exc_info()[1]
+                print(e)
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
                 bot.send_message(message.from_user.id, 'Извините, кажется что-то случилось, ошибка уже решается')
@@ -458,12 +536,14 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
@@ -503,12 +583,14 @@ def send_schedule(message):
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             try:
-                for i in x:
-                    a, b, c = i.split()
-                    pon1[a] = [b, c]
+                if x:
+                    for i in x:
+                        f = i.split()
+                        print(f)
+                        print(f[:-2], f[-2], f[-1])
+                        pon1[' '.join(f[:-2])] = [f[-2], f[-1]]
             except:
                 bot.send_message(1370770852, 'балин, опять ошибки посыпались')
                 bot.send_message(1370770852, '\n'.join(x))
@@ -545,7 +627,6 @@ def send_schedule(message):
         if message.from_user.id in m.keys():
             markup = types.ReplyKeyboardMarkup()
             u = open(f'ned{ned}/{den}.txt', 'r')
-            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             y = []
             for i in x:
@@ -575,7 +656,7 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             bot.reply_to(message,
-                         f"Введите время со скольки до скольки вы будете находиться в ДНОЦ в формате: '15.20 17.00'",
+                         f"Время посещения в формате: 'чч.мм-чч.мм'",
                          reply_markup=markup)
             bot.register_next_step_handler(message, rech)
         else:
@@ -586,18 +667,23 @@ def send_schedule(message):
         bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'добавить запись'")
 
-
+#@bot.message_handler(func=lambda message: message.text[0] == '#')
 def rech(message):
     try:
         if message.from_user.id in m.keys():
-            markup = types.ReplyKeyboardMarkup()
-            x = message.text
-            if ' ' in x:
-                u = open(f'ned{ned}/{den}.txt', 'a')
-                u.write(f"{m[message.from_user.id][0]} {x}")
-                bot.reply_to(message, 'Запись добавлена')
+            if message.text != 'Назад':
+                markup = types.ReplyKeyboardMarkup()
+                x = message.text
+                if '-' in x:
+                    x = ' '.join(x.split('-'))
+                    u = open(f'ned{ned}/{den}.txt', 'a')
+                    u.write(f"{m[message.from_user.id][0]} {x}")
+                    bot.reply_to(message, 'Запись добавлена')
+                else:
+                    bot.reply_to(message, 'Неправильный формат ввода')
+                    bot.register_next_step_handler(message, rech)
             else:
-                bot.reply_to(message, 'Неправильный формат ввода')
+                nazad(message)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
