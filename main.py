@@ -124,14 +124,25 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global ned, den
+            ned = 3
+            den = 0
+            print(0)
             markup = types.ReplyKeyboardMarkup()
             news = types.KeyboardButton('Добавить новую запись')
             markup.add(news)
             if m[message.from_user.id][1] == 0:
+                print(1)
                 itembtn = types.KeyboardButton('Удалить запись')
                 markup.add(itembtn)
             s = types.KeyboardButton('Назад')
             markup.add(s)
+            u = open('ned3/0.txt', 'r')
+            x = u.readlines()
+            t = ''
+            for i in x:
+                t += i
+            bot.reply_to(message, f"{t}", reply_markup=markup)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
@@ -141,16 +152,16 @@ def send_schedule(message):
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'важные новости'")
 
 
-@bot.message_handler(func=lambda message: message.text == 'Добавить новую записть')
+@bot.message_handler(func=lambda message: message.text == 'Добавить новую запись')
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            print(4)
             markup = types.ReplyKeyboardMarkup()
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
-            bot.reply_to(message,
-                         f"Введите информацию одним сообщением начиная со знака '!'",
-                         reply_markup=markup)
+            bot.reply_to(message, f"Введите информацию одним сообщением", reply_markup=markup)
+            bot.register_next_step_handler(message, ououou)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
@@ -158,6 +169,27 @@ def send_schedule(message):
     except:
         bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'добавить запись'")
+
+def ououou(message):
+    try:
+        if message.from_user.id in m.keys():
+            u = open('ned3/0.txt', 'a')
+            x = str(m[message.from_user.id][0]) + ': ' + str(message.text)
+            u.write(x)
+            markup = types.ReplyKeyboardMarkup()
+            itembtn = types.KeyboardButton('Назад')
+            markup.add(itembtn)
+            bot.reply_to(message, f"Новость добавлена!", reply_markup=markup)
+            bot.register_next_step_handler(message, ououou)
+        else:
+            bot.reply_to(message, "Увы, но у вас нет доступа :)")
+            bot.send_message(1370770852, str(message.from_user.id))
+            bot.send_message(1370770852, str(message.from_user.username))
+    except:
+        bot.send_message(message.from_user.id,
+                         'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
+        bot.send_message(1370770852,
+                         f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'ououou'")
 
 
 @bot.message_handler(func=lambda message: message.text == 'Эта неделя')
@@ -176,7 +208,7 @@ def send_schedule(message):
             markup.add(d3)
             d4 = types.KeyboardButton('Четверг')
             markup.add(d4)
-            d5 = types.KeyboardButton('Пятьница')
+            d5 = types.KeyboardButton('Пятница')
             markup.add(d5)
             d6 = types.KeyboardButton('Суббота')
             markup.add(d6)
@@ -196,6 +228,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 1
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -214,10 +247,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -240,6 +273,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 2
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -258,10 +292,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -284,6 +318,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 3
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -302,10 +337,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -328,6 +363,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 4
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -346,10 +382,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -372,6 +408,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 5
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -390,10 +427,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -416,6 +453,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 6
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -434,10 +472,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -460,6 +498,7 @@ def send_schedule(message):
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
+            global den
             den = 7
             markup = types.ReplyKeyboardMarkup()
             pon1 = {}
@@ -478,10 +517,10 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             if m[message.from_user.id][0] in pon1:
-                u = types.KeyboardButton('Удалить записть')
+                u = types.KeyboardButton('Удалить запись')
                 markup.add(u)
             else:
-                u = types.KeyboardButton('Добавить записть')
+                u = types.KeyboardButton('Добавить запись')
                 markup.add(u)
             soop = ''
             for name, key in pon1.items():
@@ -500,12 +539,13 @@ def send_schedule(message):
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'воскресенье'")
 
 
-@bot.message_handler(func=lambda message: message.text == 'Удалить записть')
+@bot.message_handler(func=lambda message: message.text == 'Удалить запись')
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
             markup = types.ReplyKeyboardMarkup()
             u = open(f'ned{ned}/{den}.txt', 'r')
+            print(f'ned{ned}/{den}.txt')
             x = u.readlines()
             y = []
             for i in x:
@@ -527,7 +567,7 @@ def send_schedule(message):
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'удалить запись'")
 
 
-@bot.message_handler(func=lambda message: message.text == 'Добавить записть')
+@bot.message_handler(func=lambda message: message.text == 'Добавить запись')
 def send_schedule(message):
     try:
         if message.from_user.id in m.keys():
@@ -535,8 +575,9 @@ def send_schedule(message):
             itembtn = types.KeyboardButton('Назад')
             markup.add(itembtn)
             bot.reply_to(message,
-                         f"Введите время со скольки до скольки вы будете находиться в ДНОЦ в формате: '#15.20 17.00'",
+                         f"Введите время со скольки до скольки вы будете находиться в ДНОЦ в формате: '15.20 17.00'",
                          reply_markup=markup)
+            bot.register_next_step_handler(message, rech)
         else:
             bot.reply_to(message, "Увы, но у вас нет доступа :)")
             bot.send_message(1370770852, str(message.from_user.id))
@@ -546,12 +587,11 @@ def send_schedule(message):
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции 'добавить запись'")
 
 
-@bot.message_handler(func=lambda message: '#' in message.text)
-def send_schedule(message):
+def rech(message):
     try:
         if message.from_user.id in m.keys():
             markup = types.ReplyKeyboardMarkup()
-            x = message.text[1:-1]
+            x = message.text
             if ' ' in x:
                 u = open(f'ned{ned}/{den}.txt', 'a')
                 u.write(f"{m[message.from_user.id][0]} {x}")
