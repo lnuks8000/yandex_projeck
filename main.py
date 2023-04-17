@@ -11,7 +11,7 @@ bot = telebot.TeleBot('6197994890:AAH4gv_1nrvzAGGzQm1OxYKsXumDH9P8FvI')
 def send_welcome(message):
     try:
         #print(message.from_user.id)
-        markup = types.ReplyKeyboardMarkup()
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         if message.from_user.id in m.keys():
             # Создаем клавиатуру с кнопкой "Расписание"
 
@@ -737,4 +737,4 @@ u.close()
 ned = 0
 den = 1
 #os.startfile(r'update.py')
-bot.polling()
+bot.polling(none_stop=True)
