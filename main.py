@@ -7,6 +7,7 @@ import sys
 
 
 bot = telebot.TeleBot('6197994890:AAH4gv_1nrvzAGGzQm1OxYKsXumDH9P8FvI')
+
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     try:
@@ -36,6 +37,8 @@ def send_welcome(message):
     except:
         bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f'У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции start')
+
+
 
 @bot.message_handler(func=lambda message: message.text == 'Добавить id нового пользователя')
 def send_schedule(message):
@@ -691,6 +694,7 @@ def rech(message):
     except:
         bot.send_message(message.from_user.id, 'Кажется возникла ошибка, она уже направлена разработчику, советуем попробывать перезапустить бота.')
         bot.send_message(1370770852, f"У {m[message.from_user.id][0]} ({message.from_user.id}) ошибка в функции '#'")
+
 
 @bot.message_handler(func=lambda message: message.text == 'Следующая неделя')
 def send_schedule(message):
